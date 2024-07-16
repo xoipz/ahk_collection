@@ -62,12 +62,8 @@ class Db {
     init(){
         Db.add("F","拾取")
         Db.add("U","跑步")
-        Db.add("7","升级圣遗物")
-        ; Db.add("Y","解控")
-        Db.add("[","钓鱼")
         Db.add("0","跳过")
-        ; Db.add("G","宵钟")
-        Db.add("6","临时")
+        Db.add("9","打怪")
         Db.add("En","禁用热键")
         Suspend,On
     }
@@ -256,6 +252,14 @@ return
             Db.closeTip()
         }
     return
+    
+    ;启用所有的热键和热字串.（打字用）
+    RCtrl::
+        Suspend,off
+        num:=Db.find("En")
+        Db.Array[num] := false
+        Db.tip()
+    return
 
     ;启用所有的热键和热字串.（打字用）
     RAlt::
@@ -341,59 +345,55 @@ return
         }
     return
 
-    ; ;G键凑四
-    ; G::
-    ;     num:=Db.find("G")
-    ;     Db.Array[num]:=!Db.Array[num]
-    ;     Db.tip()
-    ;     if(Db.Array[num])
-    ;         SetTimer,G_lable,200
-    ;     else
-    ;         SetTimer,G_lable,Off
-    ; return
+    ;9键打怪
+    9::
+        num:=Db.find("9")
+        Db.Array[num]:=!Db.Array[num]
+        Db.tip()
+        if(Db.Array[num])
+            SetTimer,9_lable,200
+        else
+            SetTimer,9_lable,Off
+    return
 
-    ; G_lable:
-    ;     num:=Db.find("G")
-    ;     if(!Db.Array[num]){
-    ;         SetTimer,G_lable,Off
-    ;         Db.tip()
-    ;     }
-    ;     if(Genshin.isActive()){
-    ;         ;钟离套盾 
-    ;         if(Attack.isAttack("G")){
-    ;             Attack.changeP(1)
-    ;             Attack.LongE()
-    ;             sleep 400
-    ;         }
+    9_lable:
+        num:=Db.find("9")
+        if(!Db.Array[num]){
+            SetTimer,9_lable,Off
+            Db.tip()
+        }
+        if(Genshin.isActive()){
+            ;钟离套盾 
+            if(Attack.isAttack("9")){
+                Attack.changeP(2)
+                Attack.LongE()
+                sleep 400
+            }
 
-    ;         ;芙宁娜开e
-    ;         if(Attack.isAttack("G")){
-    ;             Attack.changeP(2)
-    ;             Attack.ShortE()
-    ;             sleep 1200
-    ;         }
+            ;芙宁娜开e
+            if(Attack.isAttack("9")){
+                Attack.changeP(1)
+                Attack.ShortE()
+                sleep 1200
+            }
 
-    ;         ;神子开e
-    ;         if(Attack.isAttack("G")){
-    ;             Attack.changeP(3)
-    ;             Attack.ShortE()
-    ;             sleep 600
-    ;             Attack.ShortE()
-    ;             sleep 600
-    ;             Attack.ShortE()
-    ;             sleep 1200
-    ;         }
+            ;雷电开e
+            if(Attack.isAttack("9")){
+                Attack.changeP(3)
+                Attack.ShortE()
+                sleep 1000
+            }
 
-    ;         ;瑶瑶短E
-    ;         if(Attack.isAttack("G")){
-    ;             Attack.changeP(4)
-    ;             Attack.ShortE()
-    ;             sleep 1200
-    ;         }
+            ;瑶瑶短E
+            if(Attack.isAttack("9")){
+                Attack.changeP(4)
+                Attack.ShortE()
+                sleep 1200
+            }
 
-    ;         sleep 1000
-    ;     }
-    ; return
+            sleep 1000
+        }
+    return
 
     ;U键长跑
     U::
@@ -410,189 +410,5 @@ return
         SendInput {LShift Up}{w Up}
     return
 
-    ;[键钓鱼
-    [::
-        num:=Db.find("[")
-        Db.Array[num]:=!Db.Array[num]
-        Db.tip()
-        if(Db.Array[num])
-            SetTimer,X_lable,50
-        else
-            SetTimer,X_lable,Off
-    return
 
-    X_lable:
-        num:=Db.find("[")
-        if(!Db.Array[num]){
-            SetTimer,X_lable,Off
-            Db.tip()
-        }
-        if(Genshin.isActive()){
 
-            ;《Location》进度条的三个点
-            x1:=Loc.fish2.x1
-            x2:=Loc.fish2.x2
-            i:=Loc.fish2.i
-            y:=Loc.fish2.y
-            PixelSearch Xzs,,x1,i,x2,i,0xFFFFC0,1,FastRGB ;确定I型标志：从左向右判断（x,y）
-            PixelSearch Xzo,,x2,y,x1,y,0xFFFFC0,1,FastRGB ;确定右边距：从右向左判断（x,y）
-
-            x1:=Loc.fish3.x
-            y1:=Loc.fish3.y
-
-            ;判断是否为吊杆状态
-            if(Func.GetColor(x1,y1)=="0xFFE82C"){
-                sleep 5000
-                if(Func.GetColor(x1,y1) == "0xFFE82C"){
-                    Click
-                    sleep 2000
-                }
-            }
-
-            x1:=Loc.fish1.x
-            y1:=Loc.fish1.y
-            ;判断鱼是否上钩
-            if(Func.GetColor(x1,y1)=="0xFFFFFF"){
-                sleep 20
-                if(Func.GetColor(x1,y1) == "0xFFFFFF"){
-                    Click
-                    sleep 50
-                }
-            }
-
-            ;保持间距
-            if(Xzo-Xzs>30){
-                SendInput {LButton down}
-                Sleep 50
-                SendInput {LButton up}
-            }
-        }
-    return
-
-    ;7键凑升级圣遗物
-    7::
-        num:=Db.find("7")
-        Db.Array[num]:=!Db.Array[num]
-        Db.tip()
-        if(Db.Array[num])
-            SetTimer,7_lable,200
-        else
-            SetTimer,7_lable,Off
-    return
-
-    7_lable:
-        num:=Db.find("7")
-        if(!Db.Array[num]){
-            SetTimer,7_lable,Off
-            Db.tip()
-        }
-
-        if(Db.Array[num]){
-
-            x:=Loc.quickInsertion.x
-            y:=Loc.quickInsertion.y
-            Click, %x%,%y%
-        }
-
-        Sleep 20
-
-        if(Db.Array[num]){
-            x:=Loc.upgrade.x
-            y:=Loc.upgrade.y
-            Click, %x%,%y%
-        }
-
-        Sleep 3000
-
-        if(Db.Array[num]){
-            x:=Loc.upgradeEnter.x
-            y:=Loc.upgradeEnter.y
-            Click, %x%,%y%
-        }
-    return
-
-    ;6键临时
-    6::
-        num:=Db.find("6")
-        Db.Array[num]:=!Db.Array[num] 
-        Db.tip()
-        if(Db.Array[num])
-            SetTimer,6_lable,200
-        else
-            SetTimer,6_lable,Off
-    return
-
-    6_lable:
-        num:=Db.find("6")
-        if(!Db.Array[num]){
-            SetTimer,6_lable,Off
-            Db.tip()
-        }
-
-        if(Db.Array[num]){
-            SendInput {a Down}
-            Sleep 100
-            SendInput {a Up}
-            Click
-            Sleep 300
-        }
-
-        if(Db.Array[num]){
-            SendInput {a Down}
-            Sleep 100
-            SendInput {a Up}
-            Click
-            Sleep 300
-        }
-
-        if(Db.Array[num]){
-            SendInput {a Down}
-            Sleep 100
-            SendInput {a Up}
-            Click
-            Sleep 300
-        }
-
-        if(Db.Array[num]){
-            SendInput {a Down}
-            Sleep 100
-            SendInput {a Up}
-            Click
-            Sleep 300
-        }
-
-        if(Db.Array[num]){
-            SendInput {d Down}
-            Sleep 100
-            SendInput {d Up}
-            Click
-            Sleep 300
-        }
-
-        if(Db.Array[num]){
-            SendInput {d Down}
-            Sleep 100
-            SendInput {d Up}
-            Click
-            Sleep 300
-        }
-
-        if(Db.Array[num]){
-            SendInput {d Down}
-            Sleep 100
-            SendInput {d Up}
-            Click
-            Sleep 300
-        }
-
-        if(Db.Array[num]){
-            SendInput {d Down}
-            Sleep 100
-            SendInput {d Up}
-            Click
-            Sleep 300
-        }
-
-        ; if(Db.Array[num]){
-        ; }
-    return
