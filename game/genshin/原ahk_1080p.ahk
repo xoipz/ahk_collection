@@ -1,55 +1,24 @@
 ﻿#SingleInstance force
 #Persistent
 #NoEnv
+
+; 该代码适用于
+; 1920 x 1080 无边框
+
 ;====初始化====
 Func.RunInAdmin()
-;Genshin.Opengame()
 Db.init()
 Db.tip()
 
 ;====位置相关函数====
 ; 1080
 class Loc{
+    static Tip={x:0,y:0} ;期望tip出现的位置
     static Option = {x:1302,y:804} ;第一个选项的位置
     static Pick1 = {x:1130,y:546} ;选择框出现时会出现的两个白点（分别对应只有1个和多个选择）
     static Pick2 = {x:1060,y:553} ;多个选择会出现鼠标
     static Trans = {x:1478,y:1003} ;点击传送：0xFFCC33
-
-
-    static Tip={x:0,y:0} ;期望tip出现的位置
-    static Eye = {x:276,y:27} ;游戏内的眼睛图标
-    static Concentrate = {x:525,y:649} ;浓缩树脂的位置
-    ;钓鱼
-    static fish1 = {x:898,y:215} ;鱼是否上钩的位置
-    static fish2 = {x1:710,x2:1211,i:148,y:160} ;方格块
-    static fish3 = {x:1741,y:1029} ;换鱼饵的右键
-
-    ;升级圣遗物
-    static quickInsertion = {x:1737,y:766} ;点击快捷放入
-    static upgrade = {x:1753,y:1030} ;点击升级
-    static upgradeEnter = {x:970,y:830} ;点击确定
 }
-
-
-; ; 全屏
-; class Loc{
-;     static Tip={x:0,y:0} ;期望tip出现的位置
-;     static Eye = {x:276,y:27} ;游戏内的眼睛图标（暂时没有使用的函数）
-;     static Pick1 = {x:1505,y:807} ;选择框出现时会出现的两个白点（分别对应只有1个和多个选择）
-;     static Pick2 = {x:1414,y:818} ;多个选择会出现鼠标
-;     static Trans = {x:1959,y:1507} ;点击传送：0xFFCC33
-;     static Option = {x:1728,y:1219} ;第一个选项的位置
-;     static Concentrate = {x:525,y:649} ;浓缩树脂的位置
-;     ;钓鱼
-;     static fish1 = {x:898,y:215} ;鱼是否上钩的位置
-;     static fish2 = {x1:710,x2:1211,i:148,y:160} ;方格块
-;     static fish3 = {x:1741,y:1029} ;换鱼饵的右键
-
-;     ;升级圣遗物
-;     static quickInsertion = {x:1737,y:766} ;点击快捷放入
-;     static upgrade = {x:1753,y:1030} ;点击升级
-;     static upgradeEnter = {x:970,y:830} ;点击确定
-; }
 
 ;====数据储存池====
 class Db {
@@ -133,14 +102,6 @@ class Genshin {
     isActive(){
         return WinActive("ahk_exe YuanShen.exe")
     }
-
-    ;打开SnapHutao
-    Opengame(){
-        ysHelp:=Genshin.ysHelpIsRun()
-        if(!ysHelp){
-            run C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command "Start-Process shell:AppsFolder\60568DGPStudio.SnapHutao_wbnnev551gwxy!App -verb runas
-        }
-    }
 }
 
 ;====交互相关函数====
@@ -149,13 +110,10 @@ class Mutu{
 
 ;====识别相关函数====
 class View{
-    ;检查是否出现对话框0：没有眼睛标志1：有眼睛标志，是对话框
-    ptolk(){
-        return Func.GetColor(Loc.Eye.x,Loc.Eye.y)=="0xFFFFFF"
-    }
+
 }
 
-;====基础函数====
+;====Global Methon====
 class Func{
     ;判断程序是否运行
     isRun(program){
@@ -190,7 +148,7 @@ class Attack{
     ;是否可以攻击: true:可以攻击
     isAttack(str){
         num:=Db.find(str)
-        return (Db.Array[num] == true && WinActive("ahk_exeYuanShen.exe"))
+        return (Db.Array[num] == true && Genshin.isActive())
     }
 
     ;换人 130ms
@@ -261,7 +219,6 @@ return
         Db.tip()
     return
 
-    ;启用所有的热键和热字串.（打字用）
     RAlt::
         Suspend,off
         num:=Db.find("En")
@@ -316,10 +273,10 @@ return
         if(Func.GetColor(x1,y1)=="0xFFCC33") and Genshin.isActive() 
             Click %x1%,%y1%
 
-        x2:=Loc.Concentrate.x
-        y2:=Loc.Concentrate.y
-        if(Func.GetColor(x2,y2)=="0x4A5366")
-            Click %x2%,%y2%
+        ; x2:=Loc.Concentrate.x
+        ; y2:=Loc.Concentrate.y
+        ; if(Func.GetColor(x2,y2)=="0x4A5366")
+        ;     Click %x2%,%y2%
     return
 
     ;跳过对话

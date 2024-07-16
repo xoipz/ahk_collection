@@ -3,23 +3,23 @@
 #NoEnv
 
 ; 该代码适用于
-; 1920 x 1080 无边框
+; 2560 x 1600 无边框
 
 ;====Init====
 Func.RunInAdmin()
 Db.init()
 Db.tip()
 
-;====Location====
+;====位置相关函数====
 class Loc{
     static Tip = {x:0,y:0}
     static Option = {x:1775,y:1160} ;第一个选项的位置
     static Msg = {x:978,y:775} ;短信的位置
     static Msg2 = {x:1917,y:1063} ;任务弹出短信的位置
-
 }
 
-;====DataBase====
+
+;====数据储存池====
 class Db {
     static Length:=0
     static cArray:=[] ;字符保存
@@ -79,11 +79,10 @@ class Db {
 
 }
 
-;====StarRail Methon====
+;====星铁相关函数====
 class StarRail {
     ;星铁主程序是否运行
-    ; TODO:这里会检测到unity类型的游戏
-    srMainIsRun(){
+    xtMainIsRun(){
         return Func.isRun("UnityWndClass")
     }
 
@@ -93,15 +92,15 @@ class StarRail {
     }
 }
 
-;====Mutu====
+;====交互相关函数====
 class Mutu{
 }
 
-;====View====
+;====识别相关函数====
 class View{
 }
 
-;====Global Methon====
+;====基础函数====
 class Func{
     ;判断程序是否运行
     isRun(program){
@@ -170,15 +169,15 @@ return
         Db.Array[num]:=!Db.Array[num]
         Db.tip()
         if(Db.Array[num])
-            SetTimer,0_lable,200
+            SetTimer,R_lable,200
         else
-            SetTimer,0_lable,Off
+            SetTimer,R_lable,Off
     return
 
-    0_lable:
+    R_lable:
         num:=Db.find("0")
         if(!Db.Array[num]){
-            SetTimer,0_lable,Off
+            SetTimer,R_lable,Off
             Db.tip()
         }else if(StarRail.isActive()){
             x:=Loc.Option.x
@@ -193,15 +192,15 @@ return
         Db.Array[num]:=!Db.Array[num]
         Db.tip()
         if(Db.Array[num])
-            SetTimer,9_lable,200
+            SetTimer,E_lable,200
         else
-            SetTimer,9_lable,Off
+            SetTimer,E_lable,Off
     return
 
-    9_lable:
+    E_lable:
         num:=Db.find("9")
         if(!Db.Array[num]){
-            SetTimer,9_lable,Off
+            SetTimer,E_lable,Off
             Db.tip()
         }else if(StarRail.isActive()){
             x:=Loc.Msg.x
@@ -216,15 +215,15 @@ return
         Db.Array[num]:=!Db.Array[num]
         Db.tip()
         if(Db.Array[num])
-            SetTimer,8_lable,200
+            SetTimer,D_lable,200
         else
-            SetTimer,8_lable,Off
+            SetTimer,D_lable,Off
     return
 
-    8_lable:
+    D_lable:
         num:=Db.find("8")
         if(!Db.Array[num]){
-            SetTimer,8_lable,Off
+            SetTimer,D_lable,Off
             Db.tip()
         }else if(StarRail.isActive()){
             x:=Loc.Msg2.x
@@ -233,26 +232,31 @@ return
         }
     return
 
-    w_state := true
+    wState := true
 
     RButton::
-        if w_state {
+        ; num:=Db.find("0")
+        ; Db.Array[num]:=!Db.Array[num]
+        ; Db.tip()
+        if wState {
             Send, {w down}
             Sleep, 10
             Send, {ShiftDown}
             Send, {ShiftUp}
-            w_state := false
+            wState := false
         }else{
             Send, {w up}
-            w_state := true
+            wState := true
         }
     return
 
     MButton:: ; 鼠标中键的热键指令
         Send, {Alt down} ; 如果 Alt 键目前是按下的，松开它
+
     return
 
     !MButton:: ; Alt + 鼠标右键的热键指令
+
         Send, {Alt up} ; 如果 Alt 键目前未被按下，按下它
         Sleep, 10
         Send, {CtrlDown}
