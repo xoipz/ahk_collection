@@ -56,22 +56,22 @@ class Db {
 
     ;打开提示
     tip(){
-        tipopen:=0
-        str:=" "
-        for index,element in Db.Array{
-            En:=Db.Array[index]
-            if(En) {
-                tipopen:=1
-            }
-            str.= En ? " " . Db.sArray[index] . " " : " -" . Db.cArray[index] . "- "
-        }
-        x:=Loc.Tip.x
-        y:=Loc.Tip.y
-        ToolTip %str% ,%x%,%y%
-        if(!tipopen){
-            sleep 1000
-            ToolTip
-        }
+        ; tipopen:=0
+        ; str:=" "
+        ; for index,element in Db.Array{
+        ;     En:=Db.Array[index]
+        ;     if(En) {
+        ;         tipopen:=1
+        ;     }
+        ;     str.= En ? " " . Db.sArray[index] . " " : " -" . Db.cArray[index] . "- "
+        ; }
+        ; x:=Loc.Tip.x
+        ; y:=Loc.Tip.y
+        ; ToolTip %str% ,%x%,%y%
+        ; if(!tipopen){
+        ;     sleep 1000
+        ;     ToolTip
+        ; }
     }
 
     ;关闭tip

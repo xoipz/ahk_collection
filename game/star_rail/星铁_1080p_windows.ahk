@@ -16,6 +16,9 @@ class Loc{
     static Option = {x:1375,y:820} ;第一个选项的位置
     static Msg = {x:978,y:819} ;短信的位置
     static Msg2 = {x:1917,y:1107} ;任务弹出短信的位置
+    static Unlocak = {x:1825,y:319}
+    static select1 = {x:1494,y:540} ;选祝福
+    static select2 = {x:1703,y:1009} ;确定祝福
 }
 
 
@@ -32,6 +35,7 @@ class Db {
         Db.add("9","短信")
         Db.add("8","弹出短信")
         Db.add("En","禁用热键")
+        Db.add("7","快速解锁")
         Suspend,On
     }
 
@@ -209,6 +213,29 @@ return
         }
     return
 
+    ;短快速解锁
+    7::
+        num:=Db.find("9")
+        Db.Array[num]:=!Db.Array[num]
+        Db.tip()
+        if(Db.Array[num])
+            SetTimer,7_lable,600
+        else
+            SetTimer,7_lable,Off
+    return
+
+    7_lable:
+        num:=Db.find("9")
+        if(!Db.Array[num]){
+            SetTimer,7_lable,Off
+            Db.tip()
+        }else if(StarRail.isActive()){
+            x:=Loc.Unlocak.x
+            y:=Loc.Unlocak.y
+            Click, %x%,%y%
+        }
+    return
+
     ;任务弹出短信
     8::
         num:=Db.find("8")
@@ -261,4 +288,36 @@ return
         Sleep, 10
         Send, {CtrlDown}
         Send, {CtrlUp}
+    return
+
+    ;选祝福
+    ]::
+        num:=Db.find("6")
+        Db.Array[num]:=!Db.Array[num]
+        Db.tip()
+        if(Db.Array[num])
+            SetTimer,G_lable,200
+        else
+            SetTimer,G_lable,Off
+    return
+
+    G_lable:
+        num := Db.find("6")
+        if (!Db.Array[num]) {
+            SetTimer, G_lable, Off
+            Db.tip()
+        } else if (StarRail.isActive()) {
+            x := Loc.select1.x
+            y := Loc.select1.y
+            if (Db.Array[num]) {
+                Click, %x%, %y%
+                sleep, 100
+            }
+            x := Loc.select2.x
+            y := Loc.select2.y
+            if (Db.Array[num]) {
+                Click, %x%, %y%
+                sleep, 100
+            }
+        }
     return
