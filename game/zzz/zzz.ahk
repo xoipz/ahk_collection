@@ -1,4 +1,4 @@
-﻿#SingleInstance force
+#SingleInstance force
 #Persistent
 #NoEnv
 
@@ -13,14 +13,60 @@ Db.tip()
 ;====位置相关函数====
 class Loc{
     static Tip = {x:0,y:0}
-    static Option = {x:1375,y:820} ;第一个选项的位置
-    static Msg = {x:978,y:819} ;短信的位置
-    static Msg2 = {x:1917,y:1107} ;任务弹出短信的位置
-    static Unlocak = {x:1825,y:319}
-    static select1 = {x:1494,y:540} ;选祝福
-    static select2 = {x:1703,y:1009} ;确定祝福
+    static Option = {x:1465,y:742} ;第一个选项的位置{x:1465,y:668}
+    static Msg = {x:978,y:775} ;短信的位置
+    static Msg2 = {x:1917,y:1063} ;任务弹出短信的位置
 }
 
+;===攻击函数==
+class Attack{
+    ;是否可以攻击: true:可以攻击
+    isAttack(str){
+        num:=Db.find(str)
+        return (Db.Array[num] == true && StarRail.isActive())
+    }
+
+    ;换人 130ms
+    changeP(num){
+        sleep 30
+        SendInput %num%
+        sleep 140
+    }
+
+    ;短E 130ms
+    ShortE(){
+        SendInput e
+        sleep 300
+    }
+
+    ;长E 2130ms
+    LongE(){
+        sleep 30
+        SendInput {e Down}
+        Sleep 2000
+        SendInput {e Up}
+        sleep 100
+    }
+
+    ;平An次
+    PA(num,str){
+        index:=0
+        while(index<num){
+            if(Attack.isAttack(str)){
+                Click 
+                sleep 100
+            }
+            index++
+        }
+    }
+
+    ;大招 30ms
+    Q(){
+        sleep 30
+        SendInput q
+    }
+
+}
 
 ;====数据储存池====
 class Db {
@@ -32,11 +78,9 @@ class Db {
     ;储存池初始化
     init(){
         Db.add("0","跳过")
-        Db.add("9","短信")
+        Db.add("9","fight")
         Db.add("8","弹出短信")
         Db.add("En","禁用热键")
-        Db.add("7","快速解锁")
-        Db.add("]","选祝福")
         Suspend,On
     }
 
@@ -70,7 +114,7 @@ class Db {
         }
         x:=Loc.Tip.x
         y:=Loc.Tip.y
-        ; ToolTip %str% ,%x%,%y%
+        ToolTip %str% ,%x%,%y%
         if(!tipopen){
             sleep 1000
             ToolTip
@@ -93,7 +137,7 @@ class StarRail {
 
     ;判断星铁是否为焦点
     isActive(){
-        return WinActive("ahk_exe StarRail.exe")
+        return WinActive("ahk_exe ZenlessZoneZero.exe")
     }
 }
 
@@ -140,7 +184,7 @@ class Func{
 !p::ExitApp ;强制退出
 return
 
-#IfWinActive ahk_exe StarRail.exe
+#IfWinActive ahk_exe ZenlessZoneZero.exe
     ;禁用所有的热键和热字串.（打字用）
     ~Enter::
         Suspend,On
@@ -185,13 +229,71 @@ return
             SetTimer,R_lable,Off
             Db.tip()
         }else if(StarRail.isActive()){
-            x:=Loc.Option.x
-            y:=Loc.Option.y
-            Click, %x%,%y%
+            ; 点击 1465,742 3次
+            if(Attack.isAttack("0")) {
+                Click, 1465, 742
+            }
+            if(Attack.isAttack("0")) {
+                sleep 50
+            }
+            if(Attack.isAttack("0")) {
+                Click, 1465, 742
+            }
+            if(Attack.isAttack("0")) {
+                sleep 50
+            }
+            if(Attack.isAttack("0")) {
+                Click, 1465, 742
+            }
+            
+            ; 延迟100ms
+            if(Attack.isAttack("0")) {
+                sleep 200
+            }
+            
+            ; 点击 1750,139
+            if(Attack.isAttack("0")) {
+                Click, 1750, 139
+            }
+            
+            ; 延迟300ms
+            if(Attack.isAttack("0")) {
+                sleep 400
+            }
+            
+            ; 点击 1750,139 (第二次)
+            if(Attack.isAttack("0")) {
+                Click, 1750, 139
+            }
+            
+            ; 延迟300ms
+            if(Attack.isAttack("0")) {
+                sleep 400
+            }
+            
+            ; 点击 1104,670
+            if(Attack.isAttack("0")) {
+                Click, 1104, 670
+            }
+            
+            ; 延迟100ms
+            if(Attack.isAttack("0")) {
+                sleep 300
+            }
+
+            ; 点击 1104,670
+            if(Attack.isAttack("0")) {
+                Click, 1104, 670
+            }
+            
+            ; 延迟100ms
+            if(Attack.isAttack("0")) {
+                sleep 300
+            }
         }
     return
 
-    ;短信
+    ;fight
     9::
         num:=Db.find("9")
         Db.Array[num]:=!Db.Array[num]
@@ -207,33 +309,27 @@ return
         if(!Db.Array[num]){
             SetTimer,E_lable,Off
             Db.tip()
-        }else if(StarRail.isActive()){
-            x:=Loc.Msg.x
-            y:=Loc.Msg.y
-            Click, %x%,%y%
         }
-    return
+        if(StarRail.isActive()){
+            ;a
+            if(Attack.isAttack("9")){
+                Attack.PA(20,"9")
+            }
+            
+            ;e
+            if(Attack.isAttack("9")){
+                Attack.ShortE()
+            }
 
-    ;短快速解锁
-    7::
-        num:=Db.find("9")
-        Db.Array[num]:=!Db.Array[num]
-        Db.tip()
-        if(Db.Array[num])
-            SetTimer,7_lable,600
-        else
-            SetTimer,7_lable,Off
-    return
+            ;q
+            if(Attack.isAttack("9")){
+                Attack.Q()
+            }
 
-    7_lable:
-        num:=Db.find("9")
-        if(!Db.Array[num]){
-            SetTimer,7_lable,Off
-            Db.tip()
-        }else if(StarRail.isActive()){
-            x:=Loc.Unlocak.x
-            y:=Loc.Unlocak.y
-            Click, %x%,%y%
+            ;Space
+            if(Attack.isAttack("9")){
+                SendInput {Space}
+            }
         }
     return
 
@@ -289,36 +385,4 @@ return
         Sleep, 10
         Send, {CtrlDown}
         Send, {CtrlUp}
-    return
-
-    ;选祝福
-    ]::
-        num:=Db.find("6")
-        Db.Array[num]:=!Db.Array[num]
-        Db.tip()
-        if(Db.Array[num])
-            SetTimer,G_lable,200
-        else
-            SetTimer,G_lable,Off
-    return
-
-    G_lable:
-        num := Db.find("6")
-        if (!Db.Array[num]) {
-            SetTimer, G_lable, Off
-            Db.tip()
-        } else if (StarRail.isActive()) {
-            x := Loc.select1.x
-            y := Loc.select1.y
-            if (Db.Array[num]) {
-                Click, %x%, %y%
-                sleep, 100
-            }
-            x := Loc.select2.x
-            y := Loc.select2.y
-            if (Db.Array[num]) {
-                Click, %x%, %y%
-                sleep, 100
-            }
-        }
     return
